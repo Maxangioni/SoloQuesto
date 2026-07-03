@@ -1,0 +1,1607 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f0e6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Solo Questo">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Solo Questo — il pulsante anti-procrastinazione</title>
+  <meta name="description" content="Quando ti becchi a scappare, premi il pulsante: un respiro, un micro-passo ridotto finché non fa più paura. Gratis, in italiano, senza account.">
+  <meta property="og:title" content="Solo Questo — il pulsante anti-procrastinazione">
+  <meta property="og:description" content="Non ti chiede disciplina. Ti riporta davanti al primo centimetro.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Karla:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f5f0e6;
+      --paper-2: #ece5d4;
+      --card: #faf6ec;
+      --ink: #2a332c;
+      --ink-strong: #161d18;
+      --muted: #6b7a6e;
+      --faint: #93a094;
+      --line: rgba(38, 48, 42, 0.16);
+      --line-soft: rgba(38, 48, 42, 0.09);
+      --accent: #2f6b4f;
+      --accent-soft: rgba(47, 107, 79, 0.12);
+      --terra: #b76b3d;
+      --terra-soft: rgba(183, 107, 61, 0.12);
+      --wax: #b3402e;
+      --gold: #a8842c;
+      --shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 14px 34px rgba(52, 46, 30, 0.10);
+      --radius: 12px;
+      --space: clamp(18px, 5vw, 30px);
+      --serif: "Fraunces", Georgia, serif;
+      --sans: "Karla", "Segoe UI", sans-serif;
+      color-scheme: light;
+    }
+    html[data-theme="dark"] {
+      --paper: #141915;
+      --paper-2: #10140f;
+      --card: #1b221c;
+      --ink: #e6e0d1;
+      --ink-strong: #f6f2e6;
+      --muted: #9caa9d;
+      --faint: #6f7d70;
+      --line: rgba(230, 224, 209, 0.16);
+      --line-soft: rgba(230, 224, 209, 0.08);
+      --accent: #8ecfa9;
+      --accent-soft: rgba(142, 207, 169, 0.13);
+      --terra: #d99a6c;
+      --terra-soft: rgba(217, 154, 108, 0.13);
+      --wax: #d96a52;
+      --gold: #cfa64e;
+      --shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 16px 40px rgba(0, 0, 0, 0.35);
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      min-height: 100svh;
+      overflow-x: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16.5px;
+      line-height: 1.55;
+      transition: background 320ms ease, color 320ms ease;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      opacity: 0.5;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    body::after {
+      content: "";
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 120% 90% at 50% -10%, transparent 60%, rgba(52, 46, 30, 0.07) 100%);
+    }
+    html[data-theme="dark"] body::after {
+      background: radial-gradient(ellipse 120% 90% at 50% -10%, transparent 55%, rgba(0,0,0,0.5) 100%);
+    }
+    button, input { font: inherit; }
+    button { border: 0; background: none; color: inherit; cursor: pointer; padding: 0; }
+    button:disabled { cursor: not-allowed; opacity: 0.42; }
+    .app {
+      position: relative; z-index: 1;
+      width: min(100%, 560px);
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: max(14px, env(safe-area-inset-top)) var(--space) max(24px, env(safe-area-inset-bottom));
+      display: flex; flex-direction: column;
+    }
+    .topbar {
+      min-height: 52px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 10px;
+    }
+    .brand { display: flex; align-items: baseline; gap: 9px; }
+    .brand .seal {
+      width: 13px; height: 13px; border-radius: 50%;
+      background: radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--wax) 70%, white), var(--wax) 62%);
+      box-shadow: 0 1px 4px rgba(179, 64, 46, 0.45);
+      transform: translateY(1px);
+    }
+    .brand strong {
+      font-family: var(--serif);
+      font-weight: 640;
+      font-size: 1.14rem;
+      letter-spacing: 0.01em;
+      color: var(--ink-strong);
+    }
+    .brand span.tag {
+      color: var(--faint); font-size: 0.78rem;
+      text-transform: uppercase; letter-spacing: 0.14em;
+    }
+    .iconbtn {
+      min-width: 44px; min-height: 44px;
+      display: grid; place-items: center;
+      border-radius: 50%;
+      color: var(--muted);
+      font-size: 1.05rem;
+      transition: background 160ms ease;
+    }
+    .iconbtn:hover { background: var(--line-soft); }
+    .ghost {
+      min-height: 44px; padding: 0 12px;
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-weight: 700;
+    }
+    main { flex: 1; display: grid; }
+    .screen {
+      grid-area: 1 / 1;
+      display: none;
+      min-height: calc(100svh - 110px);
+      opacity: 0; transform: translateY(12px);
+    }
+    .screen.active {
+      display: flex; flex-direction: column;
+      animation: rise 340ms cubic-bezier(.2,.7,.3,1) forwards;
+    }
+    @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--terra);
+      font-size: 0.74rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.18em;
+    }
+    h1, h2 {
+      margin: 0;
+      font-family: var(--serif);
+      color: var(--ink-strong);
+      font-weight: 560;
+      letter-spacing: -0.01em;
+    }
+    h1 { font-size: clamp(2.1rem, 9.5vw, 3.1rem); line-height: 1.04; }
+    h2 { font-size: clamp(1.6rem, 7vw, 2.2rem); line-height: 1.08; }
+    h1 em, h2 em { font-style: italic; color: var(--accent); }
+    p { margin: 0; color: var(--muted); }
+    .home { justify-content: center; gap: 20px; padding: 26px 0 30px; }
+    .home-copy { display: grid; gap: 12px; }
+    .home-copy > p:not(.kicker) { max-width: 30rem; font-size: 1.02rem; }
+    .rule {
+      height: 1px; border: 0; margin: 2px 0;
+      background: linear-gradient(90deg, var(--line), transparent 80%);
+    }
+    .hero-btn {
+      position: relative;
+      width: 100%;
+      min-height: 96px;
+      border-radius: 16px;
+      background: var(--ink-strong);
+      color: var(--paper);
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 8vw, 2.1rem);
+      font-weight: 620;
+      font-style: italic;
+      letter-spacing: 0.01em;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.25), 0 20px 40px rgba(22, 29, 24, 0.28);
+      transition: transform 130ms ease, box-shadow 130ms ease;
+      overflow: hidden;
+    }
+    html[data-theme="dark"] .hero-btn { color: var(--paper-2); background: var(--ink-strong); box-shadow: 0 3px 0 rgba(0,0,0,0.5), 0 20px 44px rgba(0,0,0,0.5); }
+    .hero-btn::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.08) 46%, transparent 60%);
+      transform: translateX(-120%);
+      animation: sheen 5.5s ease-in-out infinite;
+    }
+    @keyframes sheen { 12% { transform: translateX(120%); } 100% { transform: translateX(120%); } }
+    .hero-btn:active { transform: translateY(3px); box-shadow: 0 0 0 rgba(0,0,0,0.25), 0 10px 22px rgba(22,29,24,0.22); }
+    .hero-sub { text-align: center; color: var(--faint); font-size: 0.86rem; margin-top: -8px; }
+    .quote {
+      border-left: 3px solid var(--gold);
+      padding: 4px 4px 4px 16px;
+      display: grid; gap: 8px;
+    }
+    .quote blockquote {
+      margin: 0;
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 480;
+      font-size: 1.18rem;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+    .quote-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .quote-meta span {
+      color: var(--faint); font-size: 0.74rem;
+      text-transform: uppercase; letter-spacing: 0.13em;
+    }
+    .quote-meta button {
+      min-height: 38px; padding: 0 10px;
+      color: var(--terra); font-weight: 800; font-size: 0.82rem;
+      border-radius: 8px;
+    }
+    .quote-meta button:hover { background: var(--terra-soft); }
+    .stats-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+    .stat {
+      min-height: 76px; padding: 12px 12px 10px;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      display: grid; align-content: center; gap: 3px;
+    }
+    .stat b { font-family: var(--serif); font-size: 1.45rem; font-weight: 600; line-height: 1; color: var(--ink-strong); }
+    .stat span { color: var(--faint); font-size: 0.73rem; line-height: 1.25; }
+    .breath-chip {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 15px;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      background: var(--accent-soft);
+      text-align: left;
+      transition: transform 140ms ease;
+    }
+    .breath-chip:active { transform: scale(0.99); }
+    .breath-chip .dotpulse {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 14%, transparent);
+      animation: pulse 2.4s ease-in-out infinite;
+      flex: 0 0 auto;
+    }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 13px transparent; } }
+    .breath-chip strong { display: block; color: var(--ink-strong); font-size: 0.98rem; }
+    .breath-chip span { color: var(--muted); font-size: 0.8rem; }
+    .home-links {
+      display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px;
+      color: var(--faint);
+    }
+    .text-link {
+      min-height: 42px; padding: 0 10px;
+      display: inline-flex; align-items: center;
+      color: var(--muted); font-weight: 700; font-size: 0.9rem;
+      text-decoration: none; border-radius: 8px;
+    }
+    .text-link:hover { background: var(--line-soft); }
+    .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
+    .flow { justify-content: center; gap: 22px; padding: 16px 0 30px; }
+    .step-dots { display: flex; gap: 7px; }
+    .step-dots span {
+      height: 4px; flex: 1; border-radius: 99px;
+      background: var(--line-soft); overflow: hidden;
+    }
+    .step-dots span::before {
+      content: ""; display: block; height: 100%;
+      background: var(--terra);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 300ms ease;
+    }
+    .step-dots span.on::before { transform: scaleX(1); }
+    .field { display: flex; flex-direction: column; gap: 12px; }
+    label, .label { color: var(--ink-strong); font-weight: 800; font-size: 1.02rem; }
+    input[type="text"] {
+      width: 100%; min-height: 60px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0 16px;
+      background: var(--card);
+      color: var(--ink-strong);
+      box-shadow: var(--shadow);
+    }
+    input[type="text"]::placeholder { color: var(--faint); }
+    input[type="text"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .chip {
+      min-height: 56px; padding: 9px 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line-soft);
+      background: var(--card);
+      color: var(--muted);
+      text-align: center;
+      font-weight: 700;
+      transition: all 150ms ease;
+    }
+    .chip small { display: block; margin-top: 2px; color: var(--faint); font-size: 0.72rem; font-weight: 500; }
+    .chip.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--ink-strong);
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+    .chip.selected small { color: var(--muted); }
+    .actions { display: grid; gap: 10px; }
+    .btn {
+      min-height: 58px; padding: 0 18px;
+      border-radius: var(--radius);
+      font-weight: 800;
+      transition: transform 140ms ease, background 140ms ease;
+    }
+    .btn:active { transform: translateY(1px) scale(0.995); }
+    .btn.solid { background: var(--ink-strong); color: var(--paper); box-shadow: 0 2px 0 rgba(0,0,0,0.2), 0 12px 26px rgba(22,29,24,0.18); }
+    html[data-theme="dark"] .btn.solid { color: var(--paper-2); }
+    .btn.good { background: var(--accent-soft); color: var(--ink-strong); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent); }
+    .btn.tender { background: var(--terra-soft); color: var(--ink-strong); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--terra) 40%, transparent); }
+    .btn.soft { background: var(--card); color: var(--muted); box-shadow: inset 0 0 0 1px var(--line-soft); }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card {
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .step-card { padding: 22px; display: grid; gap: 15px; position: relative; overflow: hidden; }
+    .step-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--gold), var(--terra));
+      opacity: 0.75;
+    }
+    .step-topline { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .step-label { color: var(--accent); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.16em; }
+    .intensity { display: flex; gap: 4px; }
+    .intensity span { width: 17px; height: 5px; border-radius: 99px; background: var(--line-soft); }
+    .intensity span.on { background: linear-gradient(90deg, var(--accent), var(--gold)); }
+    .task-capsule {
+      width: fit-content; max-width: 100%;
+      padding: 6px 11px; border-radius: 999px;
+      background: var(--paper-2);
+      color: var(--muted); font-size: 0.8rem;
+      overflow-wrap: anywhere;
+    }
+    .micro-step {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 560;
+      font-size: clamp(1.45rem, 6.6vw, 2rem);
+      line-height: 1.18;
+      color: var(--ink-strong);
+      overflow-wrap: anywhere;
+    }
+    .rescue-line {
+      padding: 13px 15px;
+      border-left: 3px solid var(--terra);
+      border-radius: 0 10px 10px 0;
+      background: var(--terra-soft);
+      color: var(--ink);
+      line-height: 1.45;
+      font-size: 0.95rem;
+    }
+    .stoic-line { color: var(--muted); font-size: 0.92rem; line-height: 1.5; font-style: italic; font-family: var(--serif); }
+    .stoic-line strong { color: var(--ink); font-weight: 600; }
+    .contract-card {
+      padding: 13px 15px;
+      border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+      border-radius: 10px;
+      background: var(--accent-soft);
+      display: grid; gap: 6px;
+    }
+    .contract-card > span { color: var(--accent); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; }
+    .contract-card p { color: var(--ink); line-height: 1.45; font-size: 0.94rem; }
+    .tiny-note { color: var(--faint); font-size: 0.88rem; }
+    .micro-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+    .tool {
+      min-height: 66px; padding: 10px;
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: inset 0 0 0 1px var(--line-soft);
+      display: grid; align-content: center; justify-items: center; gap: 2px;
+      transition: transform 140ms ease;
+    }
+    .tool:active { transform: translateY(1px); }
+    .tool strong { font-size: 0.95rem; color: var(--ink-strong); }
+    .tool span { color: var(--faint); font-size: 0.72rem; }
+    .content { padding: 16px 0 30px; gap: 18px; }
+    .content.active { justify-content: flex-start; }
+    .list { display: grid; gap: 10px; }
+    .day-label {
+      margin: 8px 0 0;
+      color: var(--faint); font-size: 0.74rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.15em;
+    }
+    .empty { padding: 24px; display: grid; gap: 8px; }
+    .empty strong { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--ink-strong); }
+    .log-item { padding: 15px; display: grid; gap: 8px; }
+    .log-top { display: flex; justify-content: space-between; gap: 12px; color: var(--faint); font-size: 0.8rem; }
+    .log-task { color: var(--ink-strong); font-weight: 800; line-height: 1.35; overflow-wrap: anywhere; }
+    .badge {
+      padding: 3px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 800;
+      background: var(--paper-2); color: var(--muted);
+    }
+    .badge.done { background: var(--accent-soft); color: var(--accent); }
+    .badge.cant { background: var(--terra-soft); color: var(--terra); }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { padding: 4px 9px; border-radius: 999px; background: var(--paper-2); color: var(--muted); font-size: 0.76rem; }
+    .inline-action {
+      width: fit-content; min-height: 38px; padding: 0 12px;
+      border-radius: 9px;
+      background: var(--accent-soft); color: var(--accent);
+      font-weight: 800; font-size: 0.88rem;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+    .insight-hero { padding: 20px; display: grid; gap: 8px; margin-bottom: 4px; }
+    .insight-hero strong { font-family: var(--serif); font-weight: 580; font-size: clamp(1.3rem, 6vw, 1.7rem); line-height: 1.2; color: var(--ink-strong); }
+    .pattern-grid { display: grid; gap: 10px; }
+    .pattern-card { padding: 17px; display: grid; gap: 8px; }
+    .pattern-card > span, .insight-hero > span { color: var(--terra); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.16em; }
+    .pattern-card strong { font-size: 1.02rem; line-height: 1.4; color: var(--ink); font-weight: 700; }
+    .bars { display: grid; gap: 9px; margin-top: 4px; }
+    .bar { display: grid; grid-template-columns: minmax(86px, 0.8fr) 1.8fr 26px; gap: 9px; align-items: center; color: var(--muted); font-size: 0.78rem; }
+    .bar-track { height: 7px; border-radius: 999px; background: var(--line-soft); overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--gold)); }
+    .strip { display: flex; align-items: flex-end; gap: 5px; height: 74px; margin-top: 6px; }
+    .strip .col { flex: 1; display: grid; gap: 4px; align-content: end; justify-items: center; }
+    .strip .colbar { width: 100%; border-radius: 4px 4px 2px 2px; background: color-mix(in srgb, var(--accent) 55%, var(--card)); min-height: 3px; }
+    .strip .col span { color: var(--faint); font-size: 0.62rem; }
+    .veil {
+      position: fixed; inset: 0; z-index: 8;
+      display: none; place-items: center;
+      background: color-mix(in srgb, var(--paper) 88%, black 2%);
+      padding: var(--space);
+    }
+    html[data-theme="dark"] .veil { background: color-mix(in srgb, var(--paper) 92%, black); }
+    .veil.show { display: grid; animation: rise 220ms ease forwards; opacity: 0; }
+    .veil-inner { width: min(100%, 420px); display: grid; gap: 22px; justify-items: center; text-align: center; }
+    .veil-close {
+      position: absolute; top: max(14px, env(safe-area-inset-top)); right: 16px;
+      min-width: 46px; min-height: 46px;
+      display: grid; place-items: center;
+      border-radius: 50%; color: var(--muted); font-size: 1.2rem;
+    }
+    .veil-close:hover { background: var(--line-soft); }
+    .breath-ball {
+      width: min(58vw, 230px); aspect-ratio: 1; border-radius: 50%;
+      display: grid; place-items: center;
+      background: radial-gradient(circle at 38% 32%, color-mix(in srgb, var(--accent) 26%, var(--card)), color-mix(in srgb, var(--accent) 10%, var(--card)) 70%);
+      box-shadow: 0 24px 60px color-mix(in srgb, var(--accent) 22%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+      transform: scale(0.72);
+      transition: transform 4s cubic-bezier(.4,0,.4,1);
+    }
+    .breath-ball .inner { display: grid; gap: 2px; }
+    .breath-ball strong { font-family: var(--serif); font-weight: 580; font-size: 1.5rem; color: var(--ink-strong); }
+    .breath-ball span { color: var(--muted); font-size: 0.9rem; }
+    .breath-cycles { color: var(--faint); font-size: 0.86rem; }
+    .count-big {
+      font-family: var(--serif); font-weight: 560;
+      font-size: clamp(5rem, 30vw, 8.5rem); line-height: 0.9;
+      color: var(--ink-strong);
+    }
+    .count-sub { color: var(--muted); font-size: 1.05rem; }
+    .focus-ring { position: relative; width: min(70vw, 270px); aspect-ratio: 1; display: grid; place-items: center; }
+    .focus-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+    .focus-ring circle { fill: none; stroke-width: 7; }
+    .focus-ring .track { stroke: var(--line-soft); }
+    .focus-ring .prog { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+    .focus-time { font-family: var(--serif); font-weight: 560; font-size: 3.2rem; color: var(--ink-strong); line-height: 1; }
+    .focus-line { min-height: 3.2em; display: grid; place-items: center; color: var(--muted); font-family: var(--serif); font-style: italic; font-size: 1.12rem; }
+    .focus-actions { display: grid; gap: 10px; width: 100%; }
+    .onb-panel { display: grid; gap: 14px; justify-items: center; text-align: center; }
+    .onb-num {
+      width: 54px; height: 54px; border-radius: 50%;
+      display: grid; place-items: center;
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 600;
+      background: var(--accent-soft); color: var(--accent);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+    .onb-panel h2 { font-size: clamp(1.5rem, 7vw, 1.9rem); }
+    .onb-panel p { max-width: 26rem; font-size: 1rem; }
+    .onb-dots { display: flex; gap: 6px; }
+    .onb-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+    .onb-dots i.on { background: var(--terra); }
+    .toast {
+      position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom));
+      z-index: 12;
+      width: min(calc(100% - 36px), 420px);
+      padding: 13px 16px;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      background: var(--ink-strong); color: var(--paper);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+      transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+      transition: opacity 200ms ease, transform 200ms ease;
+      font-weight: 700; font-size: 0.95rem;
+    }
+    html[data-theme="dark"] .toast { background: var(--card); color: var(--ink-strong); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .burst { position: fixed; inset: 0; pointer-events: none; z-index: 11; }
+    .spark {
+      position: absolute; left: 50%; top: 46%;
+      width: 8px; height: 8px; border-radius: 2px;
+      background: var(--c, var(--accent));
+      animation: fly 1000ms cubic-bezier(.15,.6,.4,1) forwards;
+    }
+    @keyframes fly {
+      to { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+    }
+    .data-grid { display: grid; gap: 10px; }
+    .data-card { padding: 17px; display: grid; gap: 10px; }
+    .data-card strong { color: var(--ink-strong); }
+    .data-card p { font-size: 0.9rem; }
+    input[type="file"] { display: none; }
+    .primary-focus:focus-visible, .btn:focus-visible, .chip:focus-visible, .tool:focus-visible,
+    .text-link:focus-visible, .ghost:focus-visible, .iconbtn:focus-visible, .hero-btn:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 3px;
+    }
+    @media (min-width: 560px) {
+      .chips { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <button id="backButton" class="ghost" hidden>&larr; Indietro</button>
+      <div class="brand"><span class="seal"></span><strong>Solo Questo</strong><span class="tag">beta</span></div>
+      <button id="themeButton" class="iconbtn" aria-label="Cambia tema" title="Tema">&#9681;</button>
+    </header>
+    <main>
+
+      <section id="screen-home" class="screen home active">
+        <div class="home-copy">
+          <p class="kicker">Quando ti becchi a scappare</p>
+          <h1>Non serve disciplina. Serve <em>il primo centimetro</em>.</h1>
+          <p>Respiri, riduciamo il compito finch&eacute; smette di far paura, parti per 90 secondi. Tutto qui.</p>
+        </div>
+        <div>
+          <button id="avoidButton" class="hero-btn">Sto evitando qualcosa</button>
+        </div>
+        <p class="hero-sub">Premilo appena te ne accorgi. Anche adesso.</p>
+        <hr class="rule">
+        <div class="quote">
+          <blockquote id="homeQuoteText"></blockquote>
+          <div class="quote-meta"><span id="homeQuoteAuthor"></span><button id="quoteButton" type="button">Un&rsquo;altra</button></div>
+        </div>
+        <div id="homeStats" class="stats-strip"></div>
+        <button id="breathChip" class="breath-chip" type="button">
+          <span class="dotpulse"></span>
+          <span><strong>Solo respirare</strong><span>4 dentro &middot; 2 fermo &middot; 6 fuori &mdash; anche senza un compito</span></span>
+        </button>
+        <nav class="home-links">
+          <button class="text-link" data-nav="history" type="button">Diario</button><span class="dot"></span>
+          <button class="text-link" data-nav="patterns" type="button">I tuoi schemi</button><span class="dot"></span>
+          <button class="text-link" data-nav="data" type="button">Dati</button><span class="dot"></span>
+          <a class="text-link" href="mailto:massimogambarelli04@gmail.com?subject=Solo%20Questo%20%E2%80%94%20feedback">Dimmi la tua</a>
+        </nav>
+      </section>
+
+      <section id="screen-log" class="screen flow">
+        <div class="step-dots"><span class="on"></span><span></span><span></span></div>
+        <div class="home-copy">
+          <p class="kicker">Passo 1 di 3</p>
+          <h2>Cosa stai evitando, <em>esattamente</em>?</h2>
+        </div>
+        <form id="logForm" class="field" novalidate>
+          <label for="taskInput">Scrivilo come lo diresti a un amico</label>
+          <input id="taskInput" type="text" inputmode="text" autocomplete="off" maxlength="120" placeholder="es. rispondere alla mail del professore">
+          <p class="label">Cosa ti pesa addosso? Puoi sceglierne pi&ugrave; di una.</p>
+          <div id="emotionChips" class="chips"></div>
+          <div class="actions">
+            <button id="continueButton" class="btn solid" type="submit">Dammi il primo passo &rarr;</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="screen-unblock" class="screen flow">
+        <div class="step-dots"><span class="on"></span><span class="on"></span><span></span></div>
+        <div class="home-copy">
+          <p class="kicker">Passo 2 di 3</p>
+          <h2>Il tuo primo passo &egrave; <em>questo</em></h2>
+        </div>
+        <div class="card step-card">
+          <div class="step-topline">
+            <span class="step-label">Fai ora solo questo</span>
+            <span id="intensityMeter" class="intensity" title="Quanto l&rsquo;abbiamo rimpicciolito"></span>
+          </div>
+          <p id="taskCapsule" class="task-capsule"></p>
+          <p id="microStep" class="micro-step"></p>
+          <p id="rescueLine" class="rescue-line"></p>
+          <p id="stoicLine" class="stoic-line"></p>
+          <div class="contract-card"><span>Patto se&ndash;allora</span><p id="contractLine"></p></div>
+        </div>
+        <div class="actions">
+          <button id="launchButton" class="btn solid" type="button">Via. 90 secondi.</button>
+          <div class="split">
+            <button id="smallerButton" class="btn good" type="button">Ancora pi&ugrave; piccolo</button>
+            <button id="cantButton" class="btn tender" type="button">Oggi non riesco</button>
+          </div>
+        </div>
+        <p id="microNote" class="tiny-note"></p>
+        <div class="micro-tools">
+          <button id="copyStepBtn" class="tool" type="button"><strong>Copia</strong><span>il passo</span></button>
+          <button id="copyPactBtn" class="tool" type="button"><strong>Copia</strong><span>il patto</span></button>
+          <button id="shareBtn" class="tool" type="button"><strong>Passa</strong><span>l&rsquo;app a chi serve</span></button>
+        </div>
+      </section>
+
+      <section id="screen-history" class="screen content">
+        <div class="home-copy">
+          <p class="kicker">Diario</p>
+          <h2>Ogni volta che ti sei <em>beccato</em></h2>
+        </div>
+        <div id="historyList" class="list"></div>
+      </section>
+
+      <section id="screen-patterns" class="screen content">
+        <div class="home-copy">
+          <p class="kicker">Schemi</p>
+          <h2>Conosci il tuo <em>nemico</em></h2>
+        </div>
+        <div id="patternsContent" class="pattern-grid"></div>
+      </section>
+
+      <section id="screen-data" class="screen content">
+        <div class="home-copy">
+          <p class="kicker">I tuoi dati</p>
+          <h2>Tuoi. <em>Solo tuoi.</em></h2>
+        </div>
+        <div class="data-grid">
+          <div class="card data-card">
+            <strong>Tutto resta sul tuo telefono</strong>
+            <p>Niente account, niente server, niente tracciamento. Il diario vive solo qui, nella memoria del browser.</p>
+          </div>
+          <div class="card data-card">
+            <strong>Backup</strong>
+            <p>Se cambi telefono o pulisci il browser, il diario si perde. Esportalo ogni tanto.</p>
+            <div class="actions">
+              <button id="exportBtn" class="btn good" type="button">Esporta il diario (JSON)</button>
+              <button id="importBtn" class="btn soft" type="button">Importa un backup</button>
+              <input id="importInput" type="file" accept="application/json,.json">
+              <button id="clearBtn" class="btn tender" type="button">Cancella tutto</button>
+            </div>
+          </div>
+          <div class="card data-card">
+            <strong>Dimmi la tua</strong>
+            <p>Questa app &egrave; giovane. Se qualcosa non ti torna o ti &egrave; servita davvero, due righe valgono oro.</p>
+            <a class="inline-action" href="mailto:massimogambarelli04@gmail.com?subject=Solo%20Questo%20%E2%80%94%20feedback">Scrivimi &rarr;</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="breathVeil" class="veil" role="dialog" aria-label="Respiro guidato">
+    <button id="breathClose" class="veil-close" aria-label="Chiudi" type="button">&#10005;</button>
+    <div class="veil-inner">
+      <div id="breathBall" class="breath-ball"><div class="inner"><strong id="breathPhase">Pronto?</strong><span id="breathSecs"></span></div></div>
+      <p id="breathCycles" class="breath-cycles"></p>
+      <button id="breathSkip" class="ghost" type="button" hidden>Salta il respiro &rarr;</button>
+    </div>
+  </div>
+
+  <div id="countVeil" class="veil" aria-hidden="true">
+    <div class="veil-inner">
+      <div id="countNum" class="count-big">3</div>
+      <p id="countText" class="count-sub">Niente pensieri. Solo il corpo.</p>
+    </div>
+  </div>
+
+  <div id="focusVeil" class="veil" role="dialog" aria-label="90 secondi di lavoro">
+    <button id="focusExit" class="veil-close" aria-label="Esci" type="button">&#10005;</button>
+    <div class="veil-inner">
+      <div class="focus-ring">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="track" cx="50" cy="50" r="45"></circle>
+          <circle id="focusProg" class="prog" cx="50" cy="50" r="45"></circle>
+        </svg>
+        <div id="focusTime" class="focus-time">1:30</div>
+      </div>
+      <p id="focusLine" class="focus-line"></p>
+      <div class="focus-actions">
+        <button id="focusDone" class="btn solid" type="button">Fatto &#10003;</button>
+        <div class="split">
+          <button id="focusMore" class="btn good" type="button" hidden>Altri 90 secondi</button>
+          <button id="focusCant" class="btn soft" type="button">Chiudo qui</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="onboardVeil" class="veil" role="dialog" aria-label="Come funziona">
+    <div class="veil-inner onb-panel">
+      <div id="obNum" class="onb-num">1</div>
+      <h2 id="obTitle"></h2>
+      <p id="obText"></p>
+      <div id="obDots" class="onb-dots"><i class="on"></i><i></i><i></i></div>
+      <div class="focus-actions">
+        <button id="obNext" class="btn solid" type="button">Avanti</button>
+        <button id="obSkip" class="ghost" type="button">Salta, ho capito</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="burst" class="burst" aria-hidden="true"></div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    /* ---------- costanti & helpers ---------- */
+    var STORAGE_KEY = "soloquesto.logs.v1";
+    var SESSION_KEY = "soloquesto.currentLog.v1";
+    var ONBOARD_KEY = "soloquesto.onboard.v1";
+    var THEME_KEY   = "soloquesto.theme.v1";
+    var FOCUS_SECONDS = 90;
+
+    function $(id) { return document.getElementById(id); }
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    function seedOf(str) {
+      var h = 7;
+      for (var i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+      return Math.abs(h);
+    }
+    function pick(arr, seed) { return arr[(seed || 0) % arr.length]; }
+    function shortTask(t) {
+      t = (t || "").trim();
+      if (t.length > 52) t = t.slice(0, 52).trim() + "…";
+      return t;
+    }
+    function readLogs() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        var arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      } catch (e) { return []; }
+    }
+    function writeLogs(logs) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(logs)); } catch (e) {}
+    }
+    function saveSession(s) {
+      try { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) {}
+    }
+    function readSession() {
+      try {
+        var raw = localStorage.getItem(SESSION_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    }
+    function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch (e) {} }
+
+    var toastTimer = null;
+    function toast(msg, ms) {
+      var el = $("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { el.classList.remove("show"); }, ms || 2600);
+    }
+    function vibrate(pattern) {
+      try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
+    }
+    function copyText(text, okMsg) {
+      var done = function () { toast(okMsg || "Copiato."); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+      } else { fallbackCopy(text); done(); }
+    }
+    function fallbackCopy(text) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", "");
+      ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    /* ---------- contenuti ---------- */
+    var QUOTES = [
+      { t: "Mentre rimandiamo, la vita passa oltre.", a: "Seneca" },
+      { t: "Non comportarti come se avessi diecimila anni da vivere.", a: "Marco Aurelio" },
+      { t: "Ciò che sta di traverso alla via diventa la via.", a: "Marco Aurelio" },
+      { t: "Non è perché le cose sono difficili che non osiamo: è perché non osiamo che sono difficili.", a: "Seneca" },
+      { t: "Prima di’ a te stesso chi vuoi essere, poi fa’ ciò che devi fare.", a: "Epitteto" },
+      { t: "Nessun vento è favorevole per chi non sa in quale porto vuole arrivare.", a: "Seneca" },
+      { t: "Le difficoltà mostrano chi sono gli uomini.", a: "Epitteto" },
+      { t: "Chi ha cominciato ha già metà dell’opera.", a: "Orazio" },
+      { t: "Bada a ciò che hai davanti, come farebbe un romano.", a: "Marco Aurelio" },
+      { t: "Hai potere sulla tua mente, non sugli eventi esterni.", a: "Marco Aurelio" }
+    ];
+
+    var EMOTIONS = [
+      { id: "ansia",      label: "Ansia",      hint: "stretta allo stomaco" },
+      { id: "confusione", label: "Confusione", hint: "non so da dove iniziare" },
+      { id: "noia",       label: "Noia",       hint: "niente mi attira" },
+      { id: "stanchezza", label: "Stanchezza", hint: "batteria a terra" },
+      { id: "paura",      label: "Paura",      hint: "di sbagliare o del giudizio" },
+      { id: "rabbia",     label: "Fastidio",   hint: "non dovrei farlo io" }
+    ];
+
+    var RESCUE = {
+      ansia:      "Quella stretta allo stomaco vuol dire che la cosa ti importa. Appena muovi le mani, si allenta. Succede ogni volta.",
+      confusione: "Lascia perdere il piano completo. Il primo centimetro ce l’hai scritto qui sopra, e per ora basta quello.",
+      noia:       "Sì, è una noia. Ma così piccolo dura meno del tempo che hai già passato a evitarlo.",
+      stanchezza: "Sei scarico, ok. Però 90 secondi li regge anche una batteria al 5%.",
+      paura:      "Questo primo passo non lo vede nessuno. Il giudizio, se mai arriva, arriva molto dopo.",
+      rabbia:     "Hai ragione a essere scocciato. Falla comunque, così smette di occuparti la testa gratis."
+    };
+
+    var STOIC = {
+      ansia:      { t: "Soffriamo più spesso nell’immaginazione che nella realtà.", a: "Seneca" },
+      confusione: { t: "Confina il presente: fa’ solo ciò che hai davanti.", a: "Marco Aurelio" },
+      noia:       { t: "Nessuna cosa grande nasce all’improvviso.", a: "Epitteto" },
+      stanchezza: { t: "Mi sveglio per fare il lavoro di un essere umano.", a: "Marco Aurelio" },
+      paura:      { t: "È perché non osiamo che le cose sono difficili.", a: "Seneca" },
+      rabbia:     { t: "Hai potere sulla tua mente, non sugli eventi esterni.", a: "Marco Aurelio" }
+    };
+
+    var FOCUS_LINES = [
+      "Non deve venire bene. Deve solo esistere.",
+      "Le mani lavorano. La testa può lamentarsi quanto vuole.",
+      "Sei già dentro. Era questa la parte difficile.",
+      "Un centimetro alla volta. Questo, adesso.",
+      "Il disagio che sentivi sta già scendendo.",
+      "Chi comincia ha già metà dell’opera."
+    ];
+
+    var DONE_TOASTS = [
+      "Fatto. Ti sei ripreso la giornata.",
+      "Un’altra vittoria sul rimandare. Segnata nel diario.",
+      "Fatto davvero. Il tuo io di stasera ringrazia."
+    ];
+    var CANT_TOASTS = [
+      "Ti sei beccato mentre scappavi: è già più di ieri.",
+      "Segnato. Anche solo accorgersene è allenamento.",
+      "Va bene così. La prossima volta il passo sarà ancora più piccolo."
+    ];
+
+    /* ---------- motore micro-passi v2 ---------- */
+    /* livello 0 = primo passo concreto → livello 3 = ridicolmente piccolo */
+    var CATS = [
+      { re: /mail|e-?mail|pec\b|messagg|rispond|whatsapp|telegram|chat/i, levels: [
+        ["Apri solo il messaggio e rileggilo. Non devi ancora rispondere."],
+        ["Scrivi solo la prima frase della risposta. Anche brutta, anche sbagliata."],
+        ["Scrivi solo il saluto e il nome. Poi puoi fermarti."],
+        ["Apri l’app e guarda il messaggio per 10 secondi. Basta questo."]
+      ]},
+      { re: /scriv|tesi|relazion|articol|capitol|paragraf|testo|tema\b|saggio/i, levels: [
+        ["Apri il documento e scrivi una riga qualsiasi, anche da buttare."],
+        ["Scrivi solo il titolo o la prima frase. Vietato correggerla."],
+        ["Apri il documento e metti il cursore dove riprenderai. Stop."],
+        ["Apri il file e rileggi l’ultima riga che avevi scritto. Solo questo."]
+      ]},
+      { re: /stud|legg|ripass|esame|lezion|slide|appunt|capir|matemat|diritto|storia/i, levels: [
+        ["Apri libro o slide alla pagina giusta e leggi il primo paragrafo."],
+        ["Leggi solo i titoli del capitolo. Nient’altro."],
+        ["Metti il libro aperto sul tavolo, alla pagina giusta. Solo aprirlo."],
+        ["Guarda l’indice per 10 secondi e scegli da dove partirai."]
+      ]},
+      { re: /pulir|pulisc|ordin|riordin|piatt|bucato|stanza|casa\b|cucina|bagno|spazz/i, levels: [
+        ["Sistema solo la prima cosa fuori posto che vedi."],
+        ["Sposta un solo oggetto dove deve stare."],
+        ["Butta una sola cosa nel cestino."],
+        ["Alzati e guarda la stanza per 10 secondi. Scegli solo da dove partire."]
+      ]},
+      { re: /chiam|telefon|prenot|appuntament|dentist|medic|dottor/i, levels: [
+        ["Cerca il numero e tienilo aperto sullo schermo."],
+        ["Scrivi su un foglio la prima frase che dirai."],
+        ["Apri la schermata di chiamata col numero pronto. Non serve premere."],
+        ["Decidi solo QUANDO chiamerai e dillo ad alta voce."]
+      ]},
+      { re: /allen|palestra|corr|sport|camminat|yoga|stretch|esercizi fisic/i, levels: [
+        ["Mettiti le scarpe da ginnastica. Solo quelle."],
+        ["Prepara i vestiti e mettili sul letto."],
+        ["Fai 10 squat esattamente dove sei. In pigiama va benissimo."],
+        ["Alzati in piedi. Solo alzarti."]
+      ]},
+      { re: /burocra|modul|document|iscri|bollett|pagament|pagare|spid|banca|tasse|isee|domanda/i, levels: [
+        ["Apri il sito o il modulo e leggi solo che cosa chiedono."],
+        ["Compila solo il primo campo: nome e cognome."],
+        ["Cerca il documento che ti serve e mettilo sul tavolo."],
+        ["Apri la pagina giusta e lasciala aperta. Hai già iniziato."]
+      ]},
+      { re: /progett|codic|programm|sito|app\b|present|report|excel|slide di lavoro|lavoro\b/i, levels: [
+        ["Apri il progetto e rileggi il punto esatto dove ti eri fermato."],
+        ["Scrivi in una riga qual è il prossimo micro-pezzo da fare."],
+        ["Apri solo il file giusto. Niente altro."],
+        ["Guarda lo schermo del progetto per 10 secondi, senza toccare nulla."]
+      ]},
+      { re: /\bcv\b|curricul|candidat|colloqui|linkedin|annunc/i, levels: [
+        ["Apri il CV e correggi una sola riga."],
+        ["Trova UN annuncio interessante e salvalo. Non candidarti ancora."],
+        ["Apri il file del CV. Solo aprirlo."],
+        ["Scrivi il nome di un’azienda dove ti piacerebbe stare."]
+      ]}
+    ];
+    var GENERIC_LEVELS = [
+      ["Prepara solo quello che ti serve per «{T}» e mettilo davanti a te.",
+       "Fai il primissimo gesto fisico di «{T}», poi puoi anche fermarti."],
+      ["Dividi «{T}» a metà: fai solo l’inizio della prima metà.",
+       "Di «{T}» fai solo la parte che richiede meno di un minuto."],
+      ["Avvicinati a «{T}»: aprilo, toccalo, mettilo davanti. Stop.",
+       "Scrivi su un foglio il primo gesto di «{T}». Solo scriverlo."],
+      ["Guarda «{T}» per 10 secondi e di’ ad alta voce: «comincio da qui».",
+       "Immagina solo il primo secondo di «{T}». Fatto? È già iniziata."]
+    ];
+    function microStepFor(task, level) {
+      var seed = seedOf(task);
+      var lv = Math.max(0, Math.min(3, level | 0));
+      for (var i = 0; i < CATS.length; i++) {
+        if (CATS[i].re.test(task)) return pick(CATS[i].levels[lv], seed);
+      }
+      return pick(GENERIC_LEVELS[lv], seed).replace(/\{T\}/g, shortTask(task).toLowerCase());
+    }
+    function contractFor(step) {
+      return "Se mi accorgo che sto aprendo il telefono o cambiando scheda, allora torno qui e rifaccio solo questo: «" + step + "».";
+    }
+    var LEVEL_NOTES = [
+      "Ti pesa ancora? Premi «Ancora più piccolo». Non è barare, è il metodo.",
+      "Ridotto. Se pesa ancora, scendi di nuovo.",
+      "Quasi niente, vero? Un altro tocco e diventa ridicolo. Apposta.",
+      "Più piccolo di così non esiste. Un centimetro non si può fallire."
+    ];
+
+    /* ---------- tema ---------- */
+    var themeMedia = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+    function themePref() { try { return localStorage.getItem(THEME_KEY) || "auto"; } catch (e) { return "auto"; } }
+    function applyTheme() {
+      var pref = themePref();
+      var dark = pref === "dark" || (pref === "auto" && themeMedia && themeMedia.matches);
+      document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", dark ? "#141915" : "#f5f0e6");
+      $("themeButton").textContent = pref === "auto" ? "◑" : (dark ? "☾" : "☀");
+    }
+    $("themeButton").addEventListener("click", function () {
+      var order = ["auto", "light", "dark"];
+      var next = order[(order.indexOf(themePref()) + 1) % order.length];
+      try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+      applyTheme();
+      toast("Tema: " + (next === "auto" ? "automatico" : next === "dark" ? "scuro" : "chiaro"));
+    });
+    if (themeMedia && themeMedia.addEventListener) themeMedia.addEventListener("change", applyTheme);
+
+    /* ---------- schermate ---------- */
+    var SCREENS = ["home", "log", "unblock", "history", "patterns", "data"];
+    var currentScreen = "home";
+    function showScreen(name) {
+      currentScreen = name;
+      SCREENS.forEach(function (s) {
+        $("screen-" + s).classList.toggle("active", s === name);
+      });
+      $("backButton").hidden = name === "home";
+      window.scrollTo(0, 0);
+      if (name === "home") { renderStats(); }
+      if (name === "history") { renderHistory(); }
+      if (name === "patterns") { renderPatterns(); }
+    }
+    $("backButton").addEventListener("click", function () { showScreen("home"); });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-nav]"), function (btn) {
+      btn.addEventListener("click", function () { showScreen(btn.getAttribute("data-nav")); });
+    });
+
+    /* ---------- citazioni & statistiche home ---------- */
+    var quoteIdx = Math.floor(Math.random() * QUOTES.length);
+    function renderQuote() {
+      var q = QUOTES[quoteIdx % QUOTES.length];
+      $("homeQuoteText").textContent = "«" + q.t + "»";
+      $("homeQuoteAuthor").textContent = q.a;
+    }
+    $("quoteButton").addEventListener("click", function () { quoteIdx++; renderQuote(); });
+
+    function dayKey(ts) {
+      var d = new Date(ts);
+      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+    }
+    function renderStats() {
+      var logs = readLogs();
+      var today = dayKey(Date.now());
+      var done = logs.filter(function (l) { return l.status === "done"; }).length;
+      var todayCount = logs.filter(function (l) { return dayKey(l.ts) === today; }).length;
+      var el = $("homeStats");
+      if (!logs.length) { el.innerHTML = ""; el.style.display = "none"; return; }
+      el.style.display = "";
+      el.innerHTML =
+        '<div class="stat"><b>' + logs.length + '</b><span>volte che ti sei beccato</span></div>' +
+        '<div class="stat"><b>' + done + '</b><span>micro-passi fatti</span></div>' +
+        '<div class="stat"><b>' + todayCount + '</b><span>oggi</span></div>';
+    }
+
+    /* ---------- respiro guidato 4-2-6 ---------- */
+    var breath = { timer: null, running: false, toFlow: false, cycles: 0 };
+    var BREATH_PHASES = [
+      { name: "Inspira", secs: 4, scale: 1 },
+      { name: "Trattieni", secs: 2, scale: 1 },
+      { name: "Espira", secs: 6, scale: 0.72 }
+    ];
+    function openBreath(toFlow) {
+      breath.toFlow = !!toFlow;
+      breath.cycles = 0;
+      breath.running = true;
+      $("breathSkip").hidden = !toFlow;
+      $("breathCycles").textContent = toFlow ? "3 giri, poi si riduce il compito" : "Chiudi quando ti basta";
+      $("breathVeil").classList.add("show");
+      runBreathPhase(0);
+    }
+    function runBreathPhase(idx) {
+      if (!breath.running) return;
+      var ph = BREATH_PHASES[idx];
+      var ball = $("breathBall");
+      ball.style.transitionDuration = ph.secs + "s";
+      ball.style.transform = "scale(" + ph.scale + ")";
+      $("breathPhase").textContent = ph.name;
+      vibrate(idx === 0 ? 18 : 10);
+      var left = ph.secs;
+      $("breathSecs").textContent = left + "s";
+      clearInterval(breath.timer);
+      breath.timer = setInterval(function () {
+        left--;
+        if (left <= 0) {
+          clearInterval(breath.timer);
+          var next = (idx + 1) % BREATH_PHASES.length;
+          if (next === 0) {
+            breath.cycles++;
+            if (breath.toFlow && breath.cycles >= 3) { finishBreath(); return; }
+            if (!breath.toFlow) $("breathCycles").textContent = breath.cycles + (breath.cycles === 1 ? " giro fatto" : " giri fatti") + " · chiudi quando ti basta";
+          }
+          runBreathPhase(next);
+        } else {
+          $("breathSecs").textContent = left + "s";
+        }
+      }, 1000);
+    }
+    function stopBreath() {
+      breath.running = false;
+      clearInterval(breath.timer);
+      $("breathVeil").classList.remove("show");
+      var ball = $("breathBall");
+      ball.style.transitionDuration = "1s";
+      ball.style.transform = "scale(0.72)";
+      $("breathPhase").textContent = "Pronto?";
+      $("breathSecs").textContent = "";
+    }
+    function finishBreath() {
+      var toFlow = breath.toFlow;
+      stopBreath();
+      if (toFlow) {
+        showScreen("log");
+        setTimeout(function () { try { $("taskInput").focus(); } catch (e) {} }, 380);
+      }
+    }
+    $("breathClose").addEventListener("click", function () {
+      if (breath.toFlow) { finishBreath(); } else { stopBreath(); }
+    });
+    $("breathSkip").addEventListener("click", finishBreath);
+    $("breathChip").addEventListener("click", function () { openBreath(false); });
+
+    /* ---------- flusso: mi sto beccando ---------- */
+    var current = null; /* { id, ts, task, emotion, emotions, level, rounds } */
+    var selectedEmotions = [];
+
+    $("avoidButton").addEventListener("click", function () {
+      var pending = readSession();
+      if (pending && pending.task) {
+        current = pending;
+        renderUnblock();
+        showScreen("unblock");
+        toast("Avevi un passo in sospeso — eccolo.");
+        return;
+      }
+      openBreath(true);
+    });
+
+    function buildEmotionChips() {
+      var wrap = $("emotionChips");
+      wrap.innerHTML = "";
+      EMOTIONS.forEach(function (em) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.setAttribute("data-emotion", em.id);
+        b.innerHTML = em.label + "<small>" + em.hint + "</small>";
+        b.addEventListener("click", function () {
+          var i = selectedEmotions.indexOf(em.id);
+          if (i >= 0) { selectedEmotions.splice(i, 1); } else { selectedEmotions.push(em.id); }
+          b.classList.toggle("selected", i < 0);
+        });
+        wrap.appendChild(b);
+      });
+    }
+
+    $("logForm").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var task = $("taskInput").value.trim();
+      if (!task) {
+        toast("Scrivi cosa stai evitando — anche due parole bastano.");
+        try { $("taskInput").focus(); } catch (e) {}
+        return;
+      }
+      current = {
+        id: "sq-" + Date.now() + "-" + Math.floor(Math.random() * 1e5),
+        ts: Date.now(),
+        task: task,
+        emotion: selectedEmotions[0] || "confusione",
+        emotions: selectedEmotions.length ? selectedEmotions.slice() : ["confusione"],
+        level: 0,
+        rounds: 0
+      };
+      saveSession(current);
+      renderUnblock();
+      showScreen("unblock");
+    });
+
+    function emotionLabel(id) {
+      for (var i = 0; i < EMOTIONS.length; i++) if (EMOTIONS[i].id === id) return EMOTIONS[i].label;
+      return id || "—";
+    }
+
+    function renderUnblock() {
+      if (!current) return;
+      var step = microStepFor(current.task, current.level);
+      current.step = step;
+      saveSession(current);
+      var emos = (current.emotions && current.emotions.length) ? current.emotions : [current.emotion];
+      $("taskCapsule").textContent = shortTask(current.task) + " · " + emos.map(function (e) { return emotionLabel(e).toLowerCase(); }).join(" + ");
+      $("microStep").textContent = step;
+      $("rescueLine").textContent = RESCUE[current.emotion] || RESCUE.confusione;
+      var st = STOIC[current.emotion] || STOIC.confusione;
+      $("stoicLine").innerHTML = "«" + st.t + "» — <strong>" + st.a + "</strong>";
+      $("contractLine").textContent = contractFor(step);
+      $("microNote").textContent = LEVEL_NOTES[current.level];
+      var meter = $("intensityMeter");
+      meter.innerHTML = "";
+      for (var i = 0; i < 4; i++) {
+        var s = document.createElement("span");
+        if (i <= current.level) s.className = "on";
+        meter.appendChild(s);
+      }
+      $("smallerButton").disabled = current.level >= 3;
+    }
+
+    $("smallerButton").addEventListener("click", function () {
+      if (!current) return;
+      current.level = Math.min(3, current.level + 1);
+      renderUnblock();
+      vibrate(12);
+    });
+
+    $("copyStepBtn").addEventListener("click", function () {
+      copyText($("microStep").textContent, "Passo copiato. Mettilo dove lo vedi.");
+    });
+    $("copyPactBtn").addEventListener("click", function () {
+      copyText($("contractLine").textContent, "Patto copiato. Tienilo a portata di mano.");
+    });
+    $("shareBtn").addEventListener("click", function () {
+      var url = location.href.split("?")[0];
+      var text = "Quando mi becco a procrastinare uso questo pulsante: respiro, micro-passo, 90 secondi. Gratis e in italiano.";
+      if (navigator.share) {
+        navigator.share({ title: "Solo Questo", text: text, url: url }).catch(function () {});
+      } else {
+        copyText(text + " " + url, "Link copiato: passalo a chi rimanda sempre.");
+      }
+    });
+
+    $("cantButton").addEventListener("click", function () { finishOutcome("cant"); });
+
+    /* ---------- countdown 3-2-1 ---------- */
+    $("launchButton").addEventListener("click", launchCountdown);
+    function launchCountdown() {
+      var veil = $("countVeil");
+      veil.classList.add("show");
+      var n = 3;
+      $("countNum").textContent = n;
+      vibrate(20);
+      var t = setInterval(function () {
+        n--;
+        if (n <= 0) {
+          clearInterval(t);
+          veil.classList.remove("show");
+          startFocus();
+        } else {
+          $("countNum").textContent = n;
+          vibrate(20);
+        }
+      }, 750);
+    }
+
+    /* ---------- focus 90 secondi ---------- */
+    var RING_C = 2 * Math.PI * 45;
+    var focusState = { timer: null, deadline: 0, lineTimer: null, wakeLock: null, ended: false };
+    (function initRing() {
+      var p = $("focusProg");
+      p.style.strokeDasharray = RING_C;
+      p.style.strokeDashoffset = 0;
+    })();
+
+    function requestWakeLock() {
+      try {
+        if (navigator.wakeLock && navigator.wakeLock.request) {
+          navigator.wakeLock.request("screen").then(function (wl) { focusState.wakeLock = wl; }, function () {});
+        }
+      } catch (e) {}
+    }
+    function releaseWakeLock() {
+      try { if (focusState.wakeLock) { focusState.wakeLock.release(); focusState.wakeLock = null; } } catch (e) {}
+    }
+    function chime() {
+      try {
+        var Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        var ctx = new Ctx();
+        [523.25, 783.99].forEach(function (freq, i) {
+          var o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = "sine"; o.frequency.value = freq;
+          o.connect(g); g.connect(ctx.destination);
+          var t0 = ctx.currentTime + i * 0.22;
+          g.gain.setValueAtTime(0.0001, t0);
+          g.gain.exponentialRampToValueAtTime(0.18, t0 + 0.03);
+          g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.9);
+          o.start(t0); o.stop(t0 + 1);
+        });
+        setTimeout(function () { try { ctx.close(); } catch (e) {} }, 1600);
+      } catch (e) {}
+    }
+
+    function startFocus() {
+      focusState.ended = false;
+      focusState.deadline = Date.now() + FOCUS_SECONDS * 1000;
+      if (current) { current.rounds = (current.rounds || 0) + 1; saveSession(current); }
+      $("focusVeil").classList.add("show");
+      $("focusMore").hidden = true;
+      $("focusDone").hidden = false;
+      var p = $("focusProg");
+      p.style.transition = "none";
+      p.style.strokeDashoffset = 0;
+      void p.getBoundingClientRect();
+      p.style.transition = "";
+      var lineIdx = seedOf(current ? current.task : "x") % FOCUS_LINES.length;
+      $("focusLine").textContent = FOCUS_LINES[lineIdx % FOCUS_LINES.length];
+      clearInterval(focusState.lineTimer);
+      focusState.lineTimer = setInterval(function () {
+        lineIdx++;
+        $("focusLine").textContent = FOCUS_LINES[lineIdx % FOCUS_LINES.length];
+      }, 18000);
+      requestWakeLock();
+      tickFocus();
+      clearInterval(focusState.timer);
+      focusState.timer = setInterval(tickFocus, 250);
+    }
+    function tickFocus() {
+      var remainMs = Math.max(0, focusState.deadline - Date.now());
+      var remain = Math.ceil(remainMs / 1000);
+      $("focusTime").textContent = Math.floor(remain / 60) + ":" + pad(remain % 60);
+      var elapsed = 1 - remainMs / (FOCUS_SECONDS * 1000);
+      $("focusProg").style.strokeDashoffset = String(RING_C * elapsed);
+      if (remainMs <= 0 && !focusState.ended) {
+        focusState.ended = true;
+        clearInterval(focusState.timer);
+        clearInterval(focusState.lineTimer);
+        chime();
+        vibrate([60, 40, 60]);
+        $("focusLine").textContent = "Tempo. Com’è andata?";
+        $("focusMore").hidden = false;
+      }
+    }
+    function closeFocus() {
+      clearInterval(focusState.timer);
+      clearInterval(focusState.lineTimer);
+      releaseWakeLock();
+      $("focusVeil").classList.remove("show");
+    }
+    $("focusExit").addEventListener("click", function () {
+      closeFocus();
+    });
+    $("focusMore").addEventListener("click", function () { startFocus(); });
+    $("focusDone").addEventListener("click", function () { closeFocus(); finishOutcome("done"); });
+    $("focusCant").addEventListener("click", function () { closeFocus(); finishOutcome("cant"); });
+
+    /* ---------- esiti ---------- */
+    function finishOutcome(status) {
+      if (!current) { showScreen("home"); return; }
+      var logs = readLogs();
+      logs.unshift({
+        id: current.id, ts: current.ts,
+        task: current.task, emotion: current.emotion,
+        emotions: current.emotions || [current.emotion],
+        level: current.level, rounds: current.rounds || 0,
+        status: status, closedAt: Date.now()
+      });
+      writeLogs(logs);
+      clearSession();
+      current = null;
+      selectedEmotions = [];
+      $("taskInput").value = "";
+      Array.prototype.forEach.call($("emotionChips").children, function (c) { c.classList.remove("selected"); });
+      showScreen("home");
+      if (status === "done") {
+        sparks();
+        vibrate([25, 30, 25]);
+        toast(pick(DONE_TOASTS, Math.floor(Math.random() * 97)), 3200);
+      } else {
+        toast(pick(CANT_TOASTS, Math.floor(Math.random() * 97)), 3200);
+      }
+    }
+
+    function sparks() {
+      var burst = $("burst");
+      var colors = ["#2f6b4f", "#a8842c", "#b76b3d", "#b3402e"];
+      for (var i = 0; i < 26; i++) {
+        var s = document.createElement("i");
+        s.className = "spark";
+        var ang = Math.random() * Math.PI * 2;
+        var dist = 90 + Math.random() * 190;
+        s.style.setProperty("--dx", Math.cos(ang) * dist + "px");
+        s.style.setProperty("--dy", Math.sin(ang) * dist - 60 + "px");
+        s.style.setProperty("--rot", Math.floor(Math.random() * 540 - 270) + "deg");
+        s.style.setProperty("--c", colors[i % colors.length]);
+        s.style.animationDelay = Math.floor(Math.random() * 120) + "ms";
+        burst.appendChild(s);
+      }
+      setTimeout(function () { burst.innerHTML = ""; }, 1500);
+    }
+
+    /* ---------- diario ---------- */
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    function dayLabel(ts) {
+      var now = new Date(); var d = new Date(ts);
+      var today = dayKey(now.getTime());
+      var yest = dayKey(now.getTime() - 86400000);
+      var k = dayKey(ts);
+      if (k === today) return "Oggi";
+      if (k === yest) return "Ieri";
+      return d.toLocaleDateString("it-IT", { weekday: "short", day: "numeric", month: "long" });
+    }
+    function renderHistory() {
+      var logs = readLogs();
+      var el = $("historyList");
+      if (!logs.length) {
+        el.innerHTML = '<div class="card empty"><strong>Ancora niente qui.</strong><p>La prima volta che ti becchi a scappare e premi il pulsante, la troverai in questa pagina.</p></div>';
+        return;
+      }
+      var html = "";
+      var lastDay = null;
+      logs.forEach(function (l) {
+        var lab = dayLabel(l.ts);
+        if (lab !== lastDay) { html += '<p class="day-label">' + escapeHtml(lab) + "</p>"; lastDay = lab; }
+        var time = new Date(l.ts).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+        var badge = l.status === "done"
+          ? '<span class="badge done">fatto ✓</span>'
+          : '<span class="badge cant">mi sono beccato</span>';
+        var emos = (l.emotions && l.emotions.length) ? l.emotions : [l.emotion];
+        var pills = '<div class="pill-row">' + emos.map(function (e) { return '<span class="pill">' + escapeHtml(emotionLabel(e).toLowerCase()) + "</span>"; }).join("");
+        if (l.level > 0) pills += '<span class="pill">ridotto ×' + l.level + "</span>";
+        if (l.rounds > 1) pills += '<span class="pill">' + l.rounds + " round da 90s</span>";
+        pills += "</div>";
+        html += '<div class="card log-item"><div class="log-top"><span>' + time + "</span>" + badge + "</div>" +
+          '<p class="log-task">' + escapeHtml(l.task) + "</p>" + pills + "</div>";
+      });
+      el.innerHTML = html;
+    }
+
+    /* ---------- schemi ---------- */
+    function topOf(counts) {
+      var best = null;
+      Object.keys(counts).forEach(function (k) {
+        if (!best || counts[k] > counts[best]) best = k;
+      });
+      return best;
+    }
+    function renderPatterns() {
+      var logs = readLogs();
+      var el = $("patternsContent");
+      if (logs.length < 3) {
+        el.innerHTML = '<div class="card empty"><strong>Servono almeno 3 voci.</strong><p>Dopo qualche utilizzo, qui vedrai quando scappi di più, con quale emozione addosso, e quanto spesso i 90 secondi bastano.</p></div>';
+        return;
+      }
+      var emoCounts = {}, slotCounts = {};
+      var done = 0;
+      var SLOTS = { notte: "di notte", mattina: "la mattina", pomeriggio: "il pomeriggio", sera: "la sera" };
+      logs.forEach(function (l) {
+        ((l.emotions && l.emotions.length) ? l.emotions : [l.emotion]).forEach(function (e) {
+          emoCounts[e] = (emoCounts[e] || 0) + 1;
+        });
+        var h = new Date(l.ts).getHours();
+        var slot = h < 6 ? "notte" : h < 13 ? "mattina" : h < 19 ? "pomeriggio" : "sera";
+        slotCounts[slot] = (slotCounts[slot] || 0) + 1;
+        if (l.status === "done") done++;
+      });
+      var topEmo = topOf(emoCounts);
+      var topSlot = topOf(slotCounts);
+      var rate = Math.round((done / logs.length) * 100);
+      var html =
+        '<div class="card insight-hero"><span>Il tuo schema</span><strong>Scappi soprattutto ' +
+        SLOTS[topSlot] + ", con addosso " + escapeHtml(emotionLabel(topEmo).toLowerCase()) +
+        ".</strong><p>Il " + rate + "% delle volte in cui premi il pulsante finisci il micro-passo. Il nemico ha delle abitudini: ora le conosci.</p></div>";
+      html += '<div class="card pattern-card"><span>Con che emozione scappi</span><div class="bars">';
+      EMOTIONS.forEach(function (em) {
+        var n = emoCounts[em.id] || 0;
+        if (!n) return;
+        var w = Math.round((n / logs.length) * 100);
+        html += '<div class="bar"><span>' + em.label + '</span><div class="bar-track"><div class="bar-fill" style="width:' + w + '%"></div></div><span>' + n + "</span></div>";
+      });
+      html += "</div></div>";
+      html += '<div class="card pattern-card"><span>Ultimi 14 giorni</span><div class="strip">';
+      var max = 1, days = [];
+      for (var i = 13; i >= 0; i--) {
+        var t = Date.now() - i * 86400000;
+        var k = dayKey(t);
+        var n2 = logs.filter(function (l) { return dayKey(l.ts) === k; }).length;
+        max = Math.max(max, n2);
+        days.push({ t: t, n: n2 });
+      }
+      days.forEach(function (d) {
+        var hpx = d.n ? Math.max(8, Math.round((d.n / max) * 58)) : 3;
+        var wd = new Date(d.t).toLocaleDateString("it-IT", { weekday: "narrow" });
+        html += '<div class="col"><div class="colbar" style="height:' + hpx + 'px"></div><span>' + wd + "</span></div>";
+      });
+      html += "</div></div>";
+      el.innerHTML = html;
+    }
+
+    /* ---------- dati: export / import / cancella ---------- */
+    $("exportBtn").addEventListener("click", function () {
+      var logs = readLogs();
+      var blob = new Blob([JSON.stringify({ app: "soloquesto", v: 1, logs: logs }, null, 2)], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "soloquesto-diario.json";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      toast("Diario esportato: " + logs.length + " voci.");
+    });
+    $("importBtn").addEventListener("click", function () { $("importInput").click(); });
+    $("importInput").addEventListener("change", function () {
+      var file = this.files && this.files[0];
+      this.value = "";
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          var data = JSON.parse(reader.result);
+          var incoming = Array.isArray(data) ? data : data.logs;
+          if (!Array.isArray(incoming)) throw new Error("bad");
+          var logs = readLogs();
+          var known = {};
+          logs.forEach(function (l) { known[l.id] = true; });
+          var added = 0;
+          incoming.forEach(function (l) {
+            if (l && l.id && l.task && !known[l.id]) { logs.push(l); known[l.id] = true; added++; }
+          });
+          logs.sort(function (a, b) { return b.ts - a.ts; });
+          writeLogs(logs);
+          renderStats();
+          toast(added ? "Importate " + added + " voci nel diario." : "Nessuna voce nuova da importare.");
+        } catch (e) {
+          toast("File non valido: serve un backup esportato da Solo Questo.");
+        }
+      };
+      reader.readAsText(file);
+    });
+    $("clearBtn").addEventListener("click", function () {
+      var logs = readLogs();
+      if (!logs.length) { toast("Il diario è già vuoto."); return; }
+      if (window.confirm("Cancellare tutto il diario (" + logs.length + " voci)? Non si può annullare.")) {
+        writeLogs([]);
+        clearSession();
+        renderStats();
+        toast("Diario cancellato. Si riparte da zero.");
+      }
+    });
+
+    /* ---------- onboarding ---------- */
+    var OB_STEPS = [
+      { title: "Beccati mentre scappi", text: "Ti accorgi che stai evitando qualcosa? Quello è il momento: apri l’app e premi il pulsante. Anche in pigiama, anche a pezzi." },
+      { title: "Riduci finché non fa paura", text: "Respiri un attimo, poi ti diamo un primo passo minuscolo. Pesa ancora? Lo rimpicciolisci di nuovo, fino al ridicolo. Apposta." },
+      { title: "Parti per 90 secondi", text: "90 secondi, poi puoi smettere. Quasi sempre continui da solo. E se ti fermi va bene lo stesso: l’hai guardato in faccia, e resta segnato nel diario." }
+    ];
+    var obIdx = 0;
+    function renderOb() {
+      var s = OB_STEPS[obIdx];
+      $("obNum").textContent = obIdx + 1;
+      $("obTitle").textContent = s.title;
+      $("obText").textContent = s.text;
+      Array.prototype.forEach.call($("obDots").children, function (dot, i) {
+        dot.className = i === obIdx ? "on" : "";
+      });
+      $("obNext").textContent = obIdx === OB_STEPS.length - 1 ? "Iniziamo" : "Avanti";
+    }
+    function closeOb() {
+      $("onboardVeil").classList.remove("show");
+      try { localStorage.setItem(ONBOARD_KEY, "1"); } catch (e) {}
+    }
+    $("obNext").addEventListener("click", function () {
+      if (obIdx >= OB_STEPS.length - 1) { closeOb(); return; }
+      obIdx++; renderOb();
+    });
+    $("obSkip").addEventListener("click", closeOb);
+
+    /* ---------- tastiera ---------- */
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key !== "Escape") return;
+      if ($("breathVeil").classList.contains("show")) { $("breathClose").click(); }
+      else if ($("focusVeil").classList.contains("show")) { closeFocus(); }
+      else if ($("onboardVeil").classList.contains("show")) { closeOb(); }
+      else if (currentScreen !== "home") { showScreen("home"); }
+    });
+
+    /* ---------- PWA: manifest inline + service worker ---------- */
+    function setupPwa() {
+      try {
+        var icon = "data:image/svg+xml," + encodeURIComponent(
+          "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>" +
+          "<rect width='100' height='100' rx='22' fill='#2a332c'/>" +
+          "<circle cx='50' cy='40' r='15' fill='#b3402e'/>" +
+          "<circle cx='45.5' cy='35' r='4' fill='#d96a52'/>" +
+          "<text x='50' y='80' font-family='Georgia,serif' font-style='italic' font-size='17' fill='#f5f0e6' text-anchor='middle'>solo</text>" +
+          "</svg>"
+        );
+        var manifest = {
+          name: "Solo Questo",
+          short_name: "SoloQuesto",
+          description: "Il pulsante anti-procrastinazione: respiro, micro-passo, 90 secondi.",
+          lang: "it",
+          start_url: location.pathname,
+          scope: location.pathname.replace(/[^/]*$/, ""),
+          display: "standalone",
+          background_color: "#f5f0e6",
+          theme_color: "#f5f0e6",
+          icons: [{ src: icon, sizes: "any", type: "image/svg+xml", purpose: "any" }],
+          shortcuts: [{
+            name: "Sto evitando qualcosa",
+            url: location.pathname + "?azione=evito",
+            icons: [{ src: icon, sizes: "any", type: "image/svg+xml" }]
+          }]
+        };
+        var mBlob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
+        var link = document.createElement("link");
+        link.rel = "manifest";
+        link.href = URL.createObjectURL(mBlob);
+        document.head.appendChild(link);
+
+        if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+          var swCode =
+            "var CACHE='soloquesto-v2';" +
+            "self.addEventListener('install',function(e){self.skipWaiting();e.waitUntil(caches.open(CACHE).then(function(c){return c.add('" + location.pathname + "');}).catch(function(){}));});" +
+            "self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(function(keys){return Promise.all(keys.filter(function(k){return k!==CACHE;}).map(function(k){return caches.delete(k);}));}).then(function(){return self.clients.claim();}));});" +
+            "self.addEventListener('fetch',function(e){if(e.request.method!=='GET')return;" +
+            "e.respondWith(fetch(e.request).then(function(r){var cp=r.clone();caches.open(CACHE).then(function(c){c.put(e.request,cp);}).catch(function(){});return r;})" +
+            ".catch(function(){return caches.match(e.request,{ignoreSearch:true});}));});";
+          var swBlob = new Blob([swCode], { type: "text/javascript" });
+          navigator.serviceWorker.register(URL.createObjectURL(swBlob), { scope: location.pathname.replace(/[^/]*$/, "") }).catch(function () {});
+        }
+      } catch (e) {}
+    }
+
+    /* ---------- avvio ---------- */
+    applyTheme();
+    renderQuote();
+    renderStats();
+    buildEmotionChips();
+    setupPwa();
+
+    var params = new URLSearchParams(location.search);
+    var wantsFlow = params.get("azione") === "evito";
+    var pending = readSession();
+
+    var seenOb = false;
+    try { seenOb = !!localStorage.getItem(ONBOARD_KEY); } catch (e) {}
+    if (!seenOb) {
+      renderOb();
+      $("onboardVeil").classList.add("show");
+    }
+
+    if (pending && pending.task) {
+      current = pending;
+      renderUnblock();
+      showScreen("unblock");
+      if (seenOb) toast("Bentornato. Avevi questo passo in sospeso.");
+    } else if (wantsFlow && seenOb) {
+      openBreath(true);
+    }
+  })();
+  </script>
+</body>
+</html>
